@@ -1,13 +1,13 @@
 MAKE_FILE_SETTING := settings
 
 test:
-	DJANGO_SETTINGS_MODULE='capricorn.settings.test' coverage run ./manage.py test
+	DJANGO_SETTINGS_MODULE='appserver.settings.test' coverage run ./manage.py test
 
 ftest:
-	DJANGO_SETTINGS_MODULE='capricorn.settings.fasttest' coverage run ./manage.py test
+	DJANGO_SETTINGS_MODULE='appserver.settings.fasttest' coverage run ./manage.py test
 
 lint:
-	pylint capricorn
+	pylint appserver
 
 report:
 	coverage report
@@ -30,4 +30,4 @@ loaddata:
 	sh config/etc/loaddata.sh
 
 rm_migrations:
-	find /var/www/capricorn -type d -regextype sed -regex "/var/www/capricorn/capricorn/apps/.*/migrations" -exec rm -rf {} \;
+	find /var/www/appserver -type d -regextype sed -regex "/var/www/appserver/appserver/apps/.*/migrations" -exec rm -rf {} \;

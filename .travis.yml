@@ -11,11 +11,11 @@ branches:
   - master
 
 before_install:
-  - docker build -t ssureymoon/capricorn .
+  - docker build -t ssureymoon/appserver .
 
 before_script:
   - psql -c 'create database testdb;' -U postgres
 
 script:
-  - docker run --name testserver --net=host -e DJANGO_SETTINGS_MODULE='capricorn.settings.test' -e CI_SERVER=true ssureymoon/capricorn /bin/bash -c 'pip3.4 install -r /var/www/capricorn/requirements/test.txt && python3.4 /var/www/capricorn/manage.py test'
+  - docker run --name testserver --net=host -e DJANGO_SETTINGS_MODULE='appserver.settings.test' -e CI_SERVER=true ssureymoon/appserver /bin/bash -c 'pip3.4 install -r /var/www/appserver/requirements/test.txt && python3.4 /var/www/appserver/manage.py test'
 

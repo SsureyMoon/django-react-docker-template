@@ -84,7 +84,7 @@ PASSWORD_HASHERS = (
 
 AWS_ACCESS_KEY_ID = 'aws-access-key-test'
 AWS_SECRET_ACCESS_KEY = 'aws-secret-key-test'
-AWS_STORAGE_BUCKET_NAME = 'capricorn-test'
+AWS_STORAGE_BUCKET_NAME = 'appserver-test'
 
 AWS_REGION = 'ap-northeast-1' # Tokyo
 # AWS_QUERYSTRING_AUTH = False

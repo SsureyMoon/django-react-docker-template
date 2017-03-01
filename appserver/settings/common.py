@@ -6,7 +6,7 @@ import environ
 from os import path
 
 ROOT_DIR = environ.Path(__file__) - 3
-SRC_DIR = ROOT_DIR.path('capricorn') # src
+SRC_DIR = ROOT_DIR.path('appserver') # src
 APPS_DIR = SRC_DIR.path('apps')
 STATIC_DIR = SRC_DIR.path('static') # static
 DIST_DIR = STATIC_DIR.path('dist') # static
@@ -50,7 +50,7 @@ LOCAL_APPS = (
     'users',
     # Your stuff: custom apps go here
     'core',
-    'apiv1'
+    'api'
 )
 
 # See: https://docs.djangoproject.com/en/dev/ref/settings/#installed-apps
@@ -200,10 +200,10 @@ MEDIA_URL = '/media/'
 
 # URL Configuration
 # ------------------------------------------------------------------------------
-ROOT_URLCONF = 'capricorn.urls'
+ROOT_URLCONF = 'appserver.urls'
 
 # See: https://docs.djangoproject.com/en/dev/ref/settings/#wsgi-application
-WSGI_APPLICATION = 'capricorn.wsgi.application'
+WSGI_APPLICATION = 'appserver.wsgi.application'
 
 # AUTHENTICATION CONFIGURATION
 # ------------------------------------------------------------------------------

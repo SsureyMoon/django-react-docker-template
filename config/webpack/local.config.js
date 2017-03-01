@@ -11,7 +11,7 @@ module.exports = (opts) => {
   const config = baseConfig(opts);
   const {PROJECT_ROOT} = opts;
   const devServer = {
-    contentBase: path.resolve(PROJECT_ROOT, 'capricorn/static/jsx'),
+    contentBase: path.resolve(PROJECT_ROOT, 'appserver/static/jsx'),
     host: "0.0.0.0",
     port: 8080,
     hot: true,
@@ -34,7 +34,7 @@ module.exports = (opts) => {
   return _.assign(config, {
     output: output,
     entry: {
-      'frontend-app': path.resolve(PROJECT_ROOT, 'capricorn/static/jsx/frontend-app'),
+      'frontend-app': path.resolve(PROJECT_ROOT, 'appserver/static/jsx/frontend-app'),
     },
     plugins: plugins,
   })

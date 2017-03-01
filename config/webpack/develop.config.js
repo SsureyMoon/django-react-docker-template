@@ -16,8 +16,8 @@ module.exports = (opts) => {
     new BundleTracker({filename: './webpack-stats.json'}),
     new CopyWebpackPlugin([
       {
-        from: path.resolve(PROJECT_ROOT, 'capricorn/static/admin-lte'),
-        to: path.resolve(PROJECT_ROOT, 'capricorn/static/dist/admin-lte')
+        from: path.resolve(PROJECT_ROOT, 'appserver/static/admin-lte'),
+        to: path.resolve(PROJECT_ROOT, 'appserver/static/dist/admin-lte')
       }
     ]),
     new CaseSensitivePathsPlugin(),  // OSX wont check but other unix os will
@@ -27,7 +27,7 @@ module.exports = (opts) => {
   const output = _.assign(
     config.output,
     {
-        path: path.resolve(PROJECT_ROOT, 'capricorn/static/dist/'),
+        path: path.resolve(PROJECT_ROOT, 'appserver/static/dist/'),
         publicPath: CDN_PATH || '/static/webpack_bundles/',
     }
   )
@@ -35,7 +35,7 @@ module.exports = (opts) => {
   return _.assign(config, {
     output: output,
     entry: {
-      'frontend-app': path.resolve(PROJECT_ROOT, 'capricorn/static/jsx/frontend-app'),
+      'frontend-app': path.resolve(PROJECT_ROOT, 'appserver/static/jsx/frontend-app'),
     },
     plugins: plugins
   })

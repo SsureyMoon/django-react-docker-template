@@ -165,23 +165,23 @@ node_modules/
 .sass-cache
 
 # User-uploaded media
-capricorn/media/
+appserver/media/
 
 # Hitch directory
 tests/.hitch
 
 
 # Webpack
-capricorn/static/capricorn/dist/
-capricorn/static/dist
-capricorn/static/webpack_bundles
+appserver/static/appserver/dist/
+appserver/static/dist
+appserver/static/webpack_bundles
 webpack-stats.json
 
 staticfiles/
 !staticfiles/holder.txt
 
-capricorn/static/capricorn/bundles/
-!capricorn/static/capricorn/bundles/holder.txt
+appserver/static/appserver/bundles/
+!appserver/static/appserver/bundles/holder.txt
 
 nohup.out
 

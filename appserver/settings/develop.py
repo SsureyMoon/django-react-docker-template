@@ -77,7 +77,7 @@ DEFAULT_FILE_STORAGE = 'core.storages.MediaRootS3BotoStorage' #'storages.backend
 STATICFILES_STORAGE = 'core.storages.StaticRootS3BotoStorage'
 
 # in the aws cloud.., we do not need it
-AWS_STORAGE_BUCKET_NAME = 'capricorn-dev'
+AWS_STORAGE_BUCKET_NAME = 'appserver-dev'
 
 AWS_REGION = 'ap-northeast-2' # Seoul
 AWS_S3_HOST = 's3-{}.amazonaws.com'.format(AWS_REGION)
@@ -165,7 +165,7 @@ LOGGING = {
             'level': 'ERROR',
             'propagate': True,
         },
-        'capricorn': {
+        'appserver': {
             'handlers': ['file'],
             'level': 'INFO',
             'propagate': True

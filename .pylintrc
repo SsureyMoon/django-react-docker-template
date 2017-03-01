@@ -1,5 +1,5 @@
 [MASTER]
-init-hook='import sys, os; sys.path.insert(0, "/var/www/capricorn/capricorn/apps")
+init-hook='import sys, os; sys.path.insert(0, "/var/www/appserver/appserver/apps")
 load-plugins=pylint_common, pylint_django, pylint_celery
 report=y
 

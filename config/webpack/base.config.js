@@ -35,7 +35,7 @@ module.exports = (opts) => {
   return {
     context: PROJECT_ROOT,
     output: {
-      path: path.resolve(PROJECT_ROOT, 'capricorn/static/webpack_bundles/'),
+      path: path.resolve(PROJECT_ROOT, 'appserver/static/webpack_bundles/'),
       filename: '[name].js',
     },
     plugins: plugins,
@@ -81,7 +81,7 @@ module.exports = (opts) => {
     resolve: {
       extensions: ['.js', '.jsx'],
       modules: [
-        path.resolve(PROJECT_ROOT, 'capricorn/static/jsx'),
+        path.resolve(PROJECT_ROOT, 'appserver/static/jsx'),
         'node_modules',
       ],
     }

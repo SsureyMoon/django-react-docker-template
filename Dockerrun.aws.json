@@ -1,4 +1,4 @@
 {
   "AWSEBDockerrunVersion": "1",
-  "Logging": "/var/www/capricorn/logs"
+  "Logging": "/var/www/appserver/logs"
 }

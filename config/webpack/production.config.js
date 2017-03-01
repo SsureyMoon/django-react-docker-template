@@ -33,7 +33,7 @@ module.exports = (opts) => {
   const output = _.assign(
     config.output,
     {
-        path: path.resolve(PROJECT_ROOT, 'capricorn/static/dist/'),
+        path: path.resolve(PROJECT_ROOT, 'appserver/static/dist/'),
         publicPath: CDN_PATH || '/static/webpack_bundles/'
     }
   )
@@ -41,7 +41,7 @@ module.exports = (opts) => {
   return _.assign(config, {
     output: output,
     entry: {
-      'frontend-app': path.resolve(PROJECT_ROOT, 'capricorn/static/jsx/frontend-app')
+      'frontend-app': path.resolve(PROJECT_ROOT, 'appserver/static/jsx/frontend-app')
     },
     plugins: plugins
   })

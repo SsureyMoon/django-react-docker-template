@@ -1,48 +1,51 @@
 # -*- coding: utf-8 -*-
 """
-Local settings
+Staging Server settings
 
-- Run in Debug mode
+- Run in None-Debug mode
 - Use console backend for emails
-- Add Django Debug Toolbar
+- No Django Debug Toolbar
 - Add django-extensions as app
+- Set Remote DB REDIS Server Info.
 """
 from .common import *  # noqa
 
-import socket
 from celery.schedules import crontab
 from importlib.machinery import SourceFileLoader
 
 # DEBUG
 # ------------------------------------------------------------------------------
-DEBUG = env.bool('DJANGO_DEBUG', default=True)
-
+DEBUG = False
 TEMPLATES[0]['OPTIONS']['debug'] = DEBUG
 
 # SECRET CONFIGURATION
 # ------------------------------------------------------------------------------
 # See: https://docs.djangoproject.com/en/dev/ref/settings/#secret-key
 # Note: This key only used for development and testing.
-SECRET_KEY = env('DJANGO_SECRET_KEY', default='nl31lg67==&snr#@f8)9de#=mgb2+005-1zi00f)g89&-6lw3)')
+SECRET_KEY = env('DJANGO_SECRET_KEY')
 
-SETTING_TYPE = 'Local'
+SETTING_TYPE = 'Staging'
+
 # Mail settings
 # ------------------------------------------------------------------------------
+EMAIL_BACKEND ='django.core.mail.backends.smtp.EmailBackend'
+EMAIL_HOST = 'smtp.mailgun.org'
+EMAIL_PORT = 587
+EMAIL_USE_TLS = True
+EMAIL_HOST_USER = env('EMAIL_HOST_USER')
+EMAIL_HOST_PASSWORD = env('EMAIL_HOST_PASSWORD')
 
-# EMAIL_PORT = 1025
-#
-# EMAIL_HOST = 'localhost'
-EMAIL_BACKEND = env('DJANGO_EMAIL_BACKEND',
-                    default='django.core.mail.backends.console.EmailBackend')
-
+# DATABASE CONFIGURATION
+# ------------------------------------------------------------------------------
+# See: https://docs.djangoproject.com/en/dev/ref/settings/#databases
 DATABASES = {
     'default': {
         'ENGINE' : 'django.db.backends.postgresql_psycopg2',
-        'NAME': env('PSQL_DB_NAME', default='db'),
-        'USER': env('PSQL_DB_USER', default='dbuser'),
-        'PASSWORD': env('PSQL_DB_PASSWD', default='dbpassword1234'),
-        'HOST': 'remotedb',
-        'PORT': '5432',
+        'NAME': env('PSQL_DB_NAME'),
+        'USER': env('PSQL_DB_USER'),
+        'PASSWORD': env('PSQL_DB_PASSWD'),
+        'HOST': env('PSQL_HOST'),
+        'PORT': env('PSQL_PORT'),
     }
 }
 DATABASES['default']['ATOMIC_REQUESTS'] = True
@@ -56,29 +59,6 @@ CACHES = {
     }
 }
 
-# django-debug-toolbar
-# ------------------------------------------------------------------------------
-MIDDLEWARE_CLASSES += ('debug_toolbar.middleware.DebugToolbarMiddleware',)
-INSTALLED_APPS += ('debug_toolbar', )
-
-INTERNAL_IPS = ['127.0.0.1', '10.0.2.2', ]
-# tricks to have debug toolbar when developing with docker
-if os.environ.get('USE_DOCKER') == 'yes':
-    ip = socket.gethostbyname(socket.gethostname())
-    INTERNAL_IPS += [ip[:-1]+"1"]
-
-DEBUG_TOOLBAR_CONFIG = {
-    'DISABLE_PANELS': [
-        'debug_toolbar.panels.redirects.RedirectsPanel',
-    ],
-    'SHOW_TEMPLATE_CONTEXT': True,
-}
-
-GRAPH_MODELS = {
-  'all_applications': False,
-  'group_models': True,
-}
-
 # django-extensions
 # ------------------------------------------------------------------------------
 INSTALLED_APPS += ('django_extensions', )
@@ -87,32 +67,61 @@ INSTALLED_APPS += ('django_extensions', )
 # ------------------------------------------------------------------------------
 TEST_RUNNER = 'django.test.runner.DiscoverRunner'
 
+# STATIC_ROOT = str(SRC_DIR('static'))
+# Your local stuff: Below this line define 3rd party library settings
+# this username and password are for test only
+
+DEFAULT_FILE_STORAGE = 'core.storages.MediaRootS3BotoStorage' #'storages.backends.s3boto.S3BotoStorage'
+STATICFILES_STORAGE = 'core.storages.StaticRootS3BotoStorage'
+
+AWS_STORAGE_BUCKET_NAME = 'appserver-staging'
+
+AWS_REGION = 'ap-northeast-2' # Seoul
+# AWS_QUERYSTRING_AUTH = False
+AWS_S3_HOST = 's3-{}.amazonaws.com'.format(AWS_REGION)
+AWS_SECRET_BUCKET = 'appserver-credentials-staging'
+
+AWS_SECRET_BUCKET_REGION = 'ap-northeast-2' # Seoul
+AWS_SECRET_BUCKET_QUERYSTRING_AUTH = True
+AWS_SECRET_BUCKET_S3_HOST = 's3.{}.amazonaws.com'.format(AWS_SECRET_BUCKET_REGION)
+os.environ['S3_USE_SIGV4'] = 'True'
+
+SQS_AWS_REGION = 'ap-northeast-2' # Seoul
+SQS_NAME = env('SQS_NAME')
+
+AWS_DEFAULT_ACL = 'private'
+AWS_QUERYSTRING_AUTH = True
+MEDIA_URL = 'https://%s.s3.amazonaws.com/assets/media/' % AWS_STORAGE_BUCKET_NAME
+STATIC_URL = 'https://%s.s3.amazonaws.com/assets/static/' % AWS_STORAGE_BUCKET_NAME
+
+del STATIC_ROOT
+del STATICFILES_DIRS
+# STATIC_ROOT = str(SRC_DIR('static'))
+STATICFILES_DIRS = (str(STATIC_DIR('dist')),)
+del STATICFILES_FINDERS
+
+# We use AWS role allocated to each instance. so following properties are not necessary:
+AWS_ACCESS_KEY_ID = env('AWS_ACCESS_KEY_ID')
+AWS_SECRET_ACCESS_KEY = env('AWS_SECRET_ACCESS_KEY')
+
 LOGGING = {
     'version': 1,
     'disable_existing_loggers': False,
     'formatters': {
         'standard': {
             'format' : "[%(asctime)s] %(levelname)s [%(name)s:%(lineno)s] %(message)s",
-            'datefmt' : "%Y/%m/%d %H:%M:%S"
+            'datefmt' : "%d/%b/%Y %H:%M:%S"
         },
     },
     'filters': {
-        'require_debug_true': {
-            '()': 'django.utils.log.RequireDebugTrue'
-        },
         'require_debug_false': {
-            '()': 'django.utils.log.RequireDebugFalse',
-        },
+            '()': 'django.utils.log.RequireDebugFalse'
+        }
     },
     'handlers': {
-        'console': {
-            'level': 'DEBUG',
-            'filters': ['require_debug_true'],
-            'class': 'logging.StreamHandler',
-            'formatter': 'standard'
-        },
         'file': {
             'level': 'DEBUG',
+            'filters': None,
             'class': 'logging.handlers.RotatingFileHandler',
             'filename': str(LOG_DIR.path('app_debug.log')),
             'maxBytes': 1024 * 1024 * 10,
@@ -121,6 +130,7 @@ LOGGING = {
         },
         'celery_file': {
             'level': 'DEBUG',
+            'filters': None,
             'class': 'logging.handlers.RotatingFileHandler',
             'filename': str(LOG_DIR.path('celery.log')),
             'maxBytes': 1024 * 1024 * 10,
@@ -129,27 +139,38 @@ LOGGING = {
         },
         'error_file': {
             'level': 'ERROR',
-            'filters': ['require_debug_false'],
             'class': 'logging.handlers.RotatingFileHandler',
+            'filters': ['require_debug_false'],
             'filename': str(LOG_DIR.path('app_error.log')),
             'maxBytes': 1024 * 1024 * 10,
             'backupCount': 50,
             'formatter': 'standard',
+        },
+        'mail_admins': {
+            'level': 'ERROR',
+            'filters': ['require_debug_false'],
+            'class': 'django.utils.log.AdminEmailHandler',
+            'include_html': True
         }
     },
     'loggers': {
         'app': {
-            'handlers': ['console'],
+            'handlers': ['file'],
             'level': 'DEBUG',
             'propagate': True
         },
-        'capricorn': {
+        'django': {
+            'handlers': ['error_file'],
+            'level': 'DEBUG',
+            'propagate': True,
+        },
+        'appserver': {
             'handlers': ['file'],
             'level': 'INFO',
             'propagate': True
         },
         'django.request': {
-            'handlers': ['error_file'],
+            'handlers': ['mail_admins'],
             'level': 'ERROR',
             'propagate': True,
         },
@@ -161,19 +182,4 @@ LOGGING = {
     }
 }
 
-# WEBPACK, In favor for webpack dev server
-# ------------------------------------------------------------------------------
-# Webpack Local Stats file
-STATS_FILE = ROOT_DIR('webpack-stats.json')
-WDS_ON = True
-# Webpack config
-WEBPACK_LOADER = {
-    'DEFAULT': {
-        'CACHE': not DEBUG,
-        'BUNDLE_DIR_NAME': 'capricorn/static/dist/', # must end with slash
-        'STATS_FILE': STATS_FILE,
-        'POLL_INTERVAL': 0.1,
-        'TIMEOUT': None,
-        'IGNORE': ['.+\.hot-update.js', '.+\.map']
-    }
-}
+ALLOWED_HOSTS = ['appserver-staging.ap-northeast-2.elasticbeanstalk.com', 'localhost']

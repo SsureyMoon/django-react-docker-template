@@ -1,0 +1,6 @@
+[run]
+include = capricorn/*
+omit = *migrations*, *tests*
+
+[html]
+directory = reports

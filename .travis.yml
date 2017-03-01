@@ -1,0 +1,21 @@
+sudo: required
+
+language: python
+
+services:
+  - docker
+  - postgresql
+
+branches:
+  only:
+  - master
+
+before_install:
+  - docker build -t ssureymoon/capricorn .
+
+before_script:
+  - psql -c 'create database testdb;' -U postgres
+
+script:
+  - docker run --name testserver --net=host -e DJANGO_SETTINGS_MODULE='capricorn.settings.test' -e CI_SERVER=true ssureymoon/capricorn /bin/bash -c 'pip3.4 install -r /var/www/capricorn/requirements/test.txt && python3.4 /var/www/capricorn/manage.py test'
+

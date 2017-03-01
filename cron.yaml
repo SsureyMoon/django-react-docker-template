@@ -1,0 +1,5 @@
+version: 1
+cron:
+ - name: "test-sending-email"
+   url: "/worker-tasks/periodic-tasks"
+   schedule: "0 1-23/12 * * *"

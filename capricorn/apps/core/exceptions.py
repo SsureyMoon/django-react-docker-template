@@ -1,0 +1,2 @@
+class NotADeliveryEmail(Exception):
+    pass
